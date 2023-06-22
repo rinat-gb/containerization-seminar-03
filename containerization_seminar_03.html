@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Контейнеризация (семинары) Семинар №3</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>Урок 3. Введение в Docker</h1>
+
+  <div class="black_box">
+    <h3>Задание №1</h3>
+    <p>Запустить контейнер с БД <code>mariaDB</code>, используя инструкции на сайте
+      <a href="https://hub.docker.com/">hub.docker.com</a>.
+    </p>
+  </div>
+
+  <p>Просто загружаем с докерхаба <code>mariadb</code> с тэгом <code>"10.10.2"</code>, запускаем, он
+    пишет нам про ошибку что не задана ни одна необходимая переменная среды и вываливается.
+    При помощи команды <code>`docker&nbsp;ps&nbsp;-a'</code> убеждаемся что контейнер загрузился,
+    установился, отработал и сейчас находится в выключенном состоянии.
+  </p>
+
+  <img src="img/containerization_seminar_03_task_01.png" alt="скриншот задания №1">
+
+  <div class="black_box">
+    <h3>Задание №2</h3>
+    <p>Слинковать папку с базой данных с контейнера с <code>mariaDB</code> в папку на хосте (как на семинаре
+      <code>/var/lib/mysql</code>). Заполнить БД данными или добавить запись и проверить, что файлы базы данных
+      появились на хостовой машине.
+    </p>
+  </div>
+
+  <ol>
+    <li>Удаляем контейнер с <code>mariadb:10.10.2</code> созданный ранее потому что в нём не были установлены
+      необходимые параметры и поэтому он нам бесполезен, был необходим просто как демонстрация задания №1</li>
+    <li>Создаём директорию для нашей базы данных <code>/tmp/mydb</code></li>
+    <li>Создаём и запускаем в режиме <code>detach</code> новый контейнер с требуемыми переменными среды и опцией для
+      связи локальной директории базы данных <code>/tmp/mydb</code> с директорией базы данных внутри контейнера
+      <code>/var/lib/mysql</code> (скачиваться с <a href="https://hub.docker.com/">hub.docker.com</a> образ контейнера
+      уже не будет т.к. ранее в задании №1 он уже был скачен и сейчас находится в кэше на локальном диске)
+    </li>
+    <li>При помощи команды <code>`docker&nbsp;ps&nbsp;-a'</code> убеждаемся что контейнер создан и находится
+      в запущенном состоянии в фоне (detached)</li>
+    <li>Запускаем в контейнере <code>bash</code> в интерактивном режиме</li>
+    <li>Далее уже находясь внутри контейнера запускаем <code>mysql</code> и создаём базу данных с именем
+      <code></code>GB
+    </li>
+    <li>Выходим из <code>mysql</code></li>
+    <li>Выходим из контейнера</li>
+    <li>При помощи команды <code>ls</code> убеждаемся что внутри нашей локальной директории <code>/tmp/mydb</code>
+      появилась база данных с именем <code>GB</code></li>
+  </ol>
+
+  <img src="img/containerization_seminar_03_task_02.png" alt="скриншот задания №2">
+
+  <div class="black_box">
+    <h3>Задание №3</h3>
+    <p> Запустить <code>phpmyadmin</code> (в контейнере) и через веб проверить, что все введенные данные доступны
+      <a href="http://localhost:8081/">http://localhost:8081/</a>
+    </p>
+  </div>
+
+  <ol>
+    <li>Скачиваем с <a href="https://hub.docker.com/">hub.docker.com</a>, создаём и запускаем в режиме
+      <code>detach</code> контейнер <code>phpmyadmin</code> с тэгом <code>"5"</code>. При запуске
+      данного контейнера посредством опции <code>--link</code> указываем что он должен быть связан
+      с базой данных <code>db</code> в контейнере <code>my_mariadb</code> и что внутренний порт
+      80 данного контейнера должен форвардиться на внешнй порт 8081 хостовой машины.
+    </li>
+    <li>При помощи команды <code>`docker&nbsp;ps&nbsp;-a'</code> убеждаемся что контейнер создан и находится
+      в запущенном состоянии в фоне (detached), равно как и ранее созданный контейнер <code>my_mariadb</code>
+      <br>
+      <img src="img/containerization_seminar_03_task_03_1.png" alt="первый скриншот задания №3">
+    </li>
+    <li>Запускаем локальный браузер по адресу URL <a href="http://localhost:8081/">http://localhost:8081/</a>
+      и убеждаемся что <code>phpmyadmin</code> нормально запустился и имеет полный доступ
+      к контейнеру с базой данных <code>mariadb</code>
+      <br>
+      <img src="img/containerization_seminar_03_task_03_2.png" alt="второй скриншот задания №3">
+      <br>
+      <img src="img/containerization_seminar_03_task_03_3.png" alt="третий скриншот задания №3">
+    </li>
+  </ol>
+
+</body>
+</html>
